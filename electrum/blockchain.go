@@ -23,7 +23,7 @@ type BlockchainHeader struct {
 	PrevBlockHash string `json:"prev_block_hash"`
 	Timestamp     uint64 `json:"timestamp"`
 	MerkleRoot    string `json:"merkle_root"`
-	BlockHeight   uint64 `json:"block_height"`
+	BlockHeight   uint64 `json:"height"`
 	UtxoRoot      string `json:"utxo_root"`
 	Version       int    `json:"version"`
 	Bits          uint64 `json:"bits"`
@@ -36,7 +36,7 @@ func (n *Node) BlockchainHeadersSubscribe() (<-chan *BlockchainHeader, error) {
 	resp := &struct {
 		Result *BlockchainHeader `json:"result"`
 	}{}
-	if err := n.request("blockchain.headers.subscribe", nil, resp); err != nil {
+	if err := n.request("blockchain.headers.subscribe", []string{}, resp); err != nil {
 		return nil, err
 	}
 	headerChan := make(chan *BlockchainHeader, 1)
@@ -139,7 +139,7 @@ func (n *Node) BlockchainAddressListUnspent(address string) ([]*Transaction, err
 	resp := &struct {
 		Result []*Transaction `json:"result"`
 	}{}
-	err := n.request("blockchain.address.listunspent", []string{address}, resp)
+	err := n.request("blockchain.scripthash.listunspent", []string{address}, resp)
 	return resp.Result, err
 }
 
